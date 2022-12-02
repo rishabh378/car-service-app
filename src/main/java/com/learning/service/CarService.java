@@ -6,7 +6,12 @@ import com.learning.repositories.CarRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -17,19 +22,21 @@ public class CarService {
 
 
     public Optional<Car> findById(long id) {
-        return carRepository.findAll().stream().filter(car -> car.getId() == id).findFirst();
+        //return carRepository.findAll().stream().filter(car -> car.getId() == id).findFirst();
+        return carRepository.findById(id);
     }
 
-    public Optional<Optional<Inventory>> findInventoryByCarId(long id) {
-        Optional<Car> optionalCar = findById(id);
-//        if (optionalCar.isPresent()) {
-//           return  inventoryService.findById(optionalCar.get().getInventoryId());
-//        }
-//        return Optional.empty();
-        optionalCar.get().getInventoryId();
-        Optional<Inventory> optionalInventory = inventoryService.findById(123);
-        return Optional.ofNullable(optionalInventory);
+    public Optional<Inventory> findInventoryByCarId(long id) {
 
+        return Optional.ofNullable(inventoryService.
+                        findById(findById(id).orElse(null).
+                        getInventoryId()).orElse(null));
     }
 
+    public void carMethod() {
+        Map<Long, Car> carMap = carRepository.findAll().stream().
+                filter(car -> car.getId() < 10).
+                collect(Collectors.toMap(car -> car.getId(), car ->  car ));
+        System.out.println(carMap);
+    }
 }

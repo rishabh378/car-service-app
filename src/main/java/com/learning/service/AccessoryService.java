@@ -3,24 +3,18 @@ package com.learning.service;
 import com.learning.entities.Accessory;
 import com.learning.entities.Car;
 import com.learning.repositories.AccessoryRepository;
-import com.learning.repositories.CarRepository;
-import models.Accessory;
-import models.Car;
-import repository.AccessoryRepository;
-import repository.CarRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Objects;
+import java.util.List;import java.util.Objects;
 import java.util.Optional;
 
+@Service
+@RequiredArgsConstructor
 public class AccessoryService {
 
     private final AccessoryRepository accessoryRepository;
     private CarService carService;
-
-    public AccessoryService(AccessoryRepository accessoryRepository) {
-        this.accessoryRepository = accessoryRepository;
-    }
 
     public Optional<Accessory> findById(long id) {
         List<Accessory> allAccessories = accessoryRepository.findAll();
@@ -33,16 +27,8 @@ public class AccessoryService {
         if(optionalAccessory.isPresent()) {
             Accessory accessory = optionalAccessory.get();
             long carId = accessory.getCarId();
-            CarService carService = getInstance();
             return carService.findById(carId);
         }
         return Optional.empty();
-    }
-
-    private CarService getInstance() {
-        if(Objects.isNull(carService)) {
-           carService = new CarService(new CarRepository());
-        }
-        return carService;
     }
 }

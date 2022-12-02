@@ -1,8 +1,12 @@
 package com.learning;
 
+import com.learning.controller.CarController;
+import com.learning.entities.Car;
+import com.learning.exceptions.CarNotFoundException;
 import com.learning.repositories.AccessoryRepository;
 import com.learning.repositories.CarRepository;
 import com.learning.repositories.InventoryRepository;
+import com.learning.service.CarService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -14,13 +18,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class CarServiceAppApplication implements CommandLineRunner {
 
 	@Autowired
-	private AccessoryRepository accesoryRepository;
+	private CarController carController;
 
 	@Autowired
-	private CarRepository carRepository;
-
-	@Autowired
-	private InventoryRepository inventoryRepository;
+	private CarService carService;
 
 	public static void main(String[] args) {
 		SpringApplication.run(CarServiceAppApplication.class, args);
@@ -28,7 +29,28 @@ public class CarServiceAppApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
+		carService.carMethod();
+		log.info("Execution Done");
+	}
 
+	private void testCases() {
+		try {
+			System.out.println(carController.getCar(15).getName().equalsIgnoreCase("thar") ? "Test Case Passed" : "Test Case Failed");
+		}catch (CarNotFoundException exceptions){
+			log.error(exceptions.getMessage(), exceptions);
+		}catch (Exception exception){
+			log.error(exception.getMessage(), exception);
+		}
+
+		try {
+			System.out.println(carController.getCar(16).getName().equalsIgnoreCase("thar") ? "Test Case Passed" : "Test Case Failed");
+		}catch (CarNotFoundException exceptions){
+			log.error(exceptions.getMessage(), exceptions);
+		}catch (Exception exception){
+			log.error(exception.getMessage(), exception);
+		}
+
+		log.info("Execution Completes");
 	}
 
 	private void saveAccessoryData() {
